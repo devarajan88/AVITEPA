@@ -1,5 +1,6 @@
 package com.avitepa.foundation.bank.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity(name = "ACCOUNT")
+@Builder
 public class Account extends Auditable<String> implements Serializable {
 
     @Id

@@ -1,4 +1,4 @@
-package com.avitepa.foundation.bank;
+package com.avitepa.foundation.bank.controller;
 
 import com.avitepa.foundation.bank.common.TestConstants;
 import com.avitepa.foundation.bank.controller.AccountController;
@@ -18,13 +18,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest({AccountController.class})
-public class AccountControllerTest {
+public class  AccountControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,7 +36,7 @@ public class AccountControllerTest {
     private AccountServiceImpl accountService;
 
     Account account;
-    Customer customer = new Customer();
+    Customer customer;
 
     @BeforeEach
     public void setUp() {
@@ -48,11 +51,11 @@ public class AccountControllerTest {
         account.setBalance(TestConstants.BALANCE);
         account.setDateOpened(TestConstants.DATE_OPENED);
 
-        customer.setCustomerId(TestConstants.CUST_ID);
-        customer.setFirstName(TestConstants.FIRST_NAME);
-        customer.setLastName(TestConstants.LAST_NAME);
-        customer.setAddress(TestConstants.ADDRESS);
-        customer.setBranch(TestConstants.BRANCH);
+        customer  = Customer.builder().customerId(TestConstants.CUST_ID)
+                .firstName(TestConstants.FIRST_NAME)
+                .lastName(TestConstants.LAST_NAME)
+                .address(TestConstants.ADDRESS)
+                .branch(TestConstants.BRANCH).build();
     }
 
     @Test
@@ -65,6 +68,45 @@ public class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("SUCCESS"));
 
+    }
+
+    @Test
+    public void getAllAccounts_Test() throws Exception {
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(account);
+        when(accountService.getAllAccounts()).thenReturn(accounts);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/accounts/all")
+                        .content(asJsonString(customer))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
+
+    @Test
+    public void getAllCustomers_Test() throws Exception {
+        List<Customer> customers = new ArrayList<>();
+        customers.add(customer);
+        when(accountService.getAllCustomers()).thenReturn(customers);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/customers/all")
+                        .content(asJsonString(customer))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
+
+    @Test
+    public void transferFunds_Test() throws Exception {
+        when(accountService.transferFunds(101, 202, 25.55)).thenReturn("SUCCESS");
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/accounts/transfer")
+                        .content(asJsonString(customer))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     public static String asJsonString(final Object obj) {

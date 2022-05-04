@@ -1,5 +1,6 @@
 package com.avitepa.foundation.bank.service.impl;
 
+import com.avitepa.foundation.bank.exceptionhandling.AccountServiceException;
 import com.avitepa.foundation.bank.model.Account;
 import com.avitepa.foundation.bank.model.Customer;
 import com.avitepa.foundation.bank.repository.AccountRepository;
@@ -23,12 +24,12 @@ public class AccountServiceImpl implements AccountService {
     private CustomerRepository customerRepository;
 
     @Override
-    public Account addAccount(Account account) {
+    public Account addAccount(Account account) throws AccountServiceException {
         return accountRepository.save(account);
     }
 
     @Override
-    public List<Account> getAllAccounts() {
+    public List<Account> getAllAccounts() throws AccountServiceException {
         return accountRepository.findAll();
     }
 

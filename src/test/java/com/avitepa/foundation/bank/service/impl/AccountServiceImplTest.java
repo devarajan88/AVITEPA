@@ -1,6 +1,7 @@
 package com.avitepa.foundation.bank.service.impl;
 
 import com.avitepa.foundation.bank.common.TestConstants;
+import com.avitepa.foundation.bank.exceptionhandling.AccountServiceException;
 import com.avitepa.foundation.bank.model.Account;
 import com.avitepa.foundation.bank.model.Customer;
 import com.avitepa.foundation.bank.repository.AccountRepository;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +36,7 @@ public class AccountServiceImplTest {
     private CustomerRepository customerRepository;
 
     Account account;
-    Customer customer = new Customer();
+    Customer customer;
 
     @BeforeEach
     public void setUp() {
@@ -49,15 +51,15 @@ public class AccountServiceImplTest {
         account.setBalance(TestConstants.BALANCE);
         account.setDateOpened(TestConstants.DATE_OPENED);
 
-        customer.setCustomerId(TestConstants.CUST_ID);
-        customer.setFirstName(TestConstants.FIRST_NAME);
-        customer.setLastName(TestConstants.LAST_NAME);
-        customer.setAddress(TestConstants.ADDRESS);
-        customer.setBranch(TestConstants.BRANCH);
+        customer  = Customer.builder().customerId(TestConstants.CUST_ID)
+                .firstName(TestConstants.FIRST_NAME)
+                .lastName(TestConstants.LAST_NAME)
+                .address(TestConstants.ADDRESS)
+                .branch(TestConstants.BRANCH).build();
     }
 
     @Test
-    public void addAccount_Test() {
+    public void addAccount_Test() throws AccountServiceException {
         int accountNumber  = TestConstants.ACC_NO;
         when(accountRepository.save(account)).thenReturn(account);
 
@@ -66,7 +68,7 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void getAllAccounts_Test() {
+    public void getAllAccounts_Test() throws AccountServiceException {
         List<Account> accounts = new ArrayList<>();
         accounts.add(account);
         accounts.add(account);
@@ -77,7 +79,7 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void getAllCustomers_Test() {
+    public void getAllCustomers_Test() throws AccountServiceException {
         List<Customer> customers = new ArrayList<>();
         customers.add(customer);
         customers.add(customer);
@@ -88,14 +90,14 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void addCustomer_Test() {
+    public void addCustomer_Test() throws AccountServiceException {
         when(customerRepository.save(customer)).thenReturn(customer);
         Customer addedCustomer = accountService.addCustomer(customer);
         assertThat(addedCustomer.getCustomerId()).isNotNull();
     }
 
     @Test
-    public void getBalanceOf_Test() {
+    public void getBalanceOf_Test() throws AccountServiceException {
         when(accountRepository.findById(TestConstants.ACC_NO)).thenReturn(Optional.of(account));
         Optional<Account> retrievedAccount = accountService.getBalanceOf(TestConstants.ACC_NO);
         assertEquals(TestConstants.BALANCE, retrievedAccount.get().getBalance());

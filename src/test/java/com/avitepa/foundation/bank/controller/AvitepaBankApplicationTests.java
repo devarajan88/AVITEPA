@@ -1,4 +1,4 @@
-package com.avitepa.foundation.bank;
+package com.avitepa.foundation.bank.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

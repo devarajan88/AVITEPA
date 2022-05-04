@@ -2,6 +2,7 @@ package com.avitepa.foundation.bank.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity(name = "CUSTOMER")
-@Builder
+@NoArgsConstructor
 public class Customer extends Auditable<String> implements Serializable {
 
     @Id

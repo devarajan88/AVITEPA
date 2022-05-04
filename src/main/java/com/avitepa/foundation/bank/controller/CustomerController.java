@@ -1,5 +1,6 @@
 package com.avitepa.foundation.bank.controller;
 
+import com.avitepa.foundation.bank.exceptionhandling.AccountServiceException;
 import com.avitepa.foundation.bank.model.Account;
 import com.avitepa.foundation.bank.model.Customer;
 import com.avitepa.foundation.bank.service.AccountService;
@@ -18,13 +19,13 @@ public class CustomerController {
     private AccountService accountService;
 
     @GetMapping("/customers")
-    public ResponseEntity getAllCustomers() {
+    public ResponseEntity getAllCustomers() throws AccountServiceException {
         List<Customer> customers = accountService.getAllCustomers();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @PostMapping("/customers/add")
-    public ResponseEntity addAccount(@RequestBody Customer cust) {
+    public ResponseEntity addAccount(@RequestBody Customer cust) throws AccountServiceException {
         accountService.addCustomer(cust);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
